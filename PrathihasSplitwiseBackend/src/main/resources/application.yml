@@ -1,0 +1,62 @@
+#spring.application.name=PrathihasSplitwise
+#
+#spring.datasource.url=jdbc:mysql://splitwise.cpyaak8mimz1.us-east-2.rds.amazonaws.com:3307/splitwiseschema
+#spring.datasource.username=splitwise
+#spring.datasource.password=Chikku3103
+#
+#spring.jpa.open-in-view=false
+#
+#spring.jpa.properties.hibernate.event.merge.entity_copy_observer=allow
+#
+#server.port=8080
+
+spring:
+  application:
+    name: PrathihasSplitwise
+
+  datasource:
+    url: jdbc:mysql://splitwise.cpyaak8mimz1.us-east-2.rds.amazonaws.com:3307/splitwiseschema
+    username: splitwise
+    password: Chikku3103
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        event:
+          merge:
+            entity_copy_observer: allow
+
+server:
+  port: 8080
+
+# Uncomment the following lines if needed for a different configuration
+# spring:
+#   datasource:
+#     url: jdbc:mysql://database-1.c9gwyseo4s8h.us-east-2.rds.amazonaws.com:3306/
+#     username: admin
+#     password: Chikku3103
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate:
+#         dialect: org.hibernate.dialect.MySQL8Dialect
+
+
+#spring.datasource.url=jdbc:mysql://database-1.c9gwyseo4s8h.us-east-2.rds.amazonaws.com:3306/
+#spring.datasource.username=admin
+#spring.datasource.password=Chikku3103
+
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+#spring.jpa.hibernate.ddl-auto=update
+#spring.jpa.show-sql=true
+#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+#spring.datasource.url=jdbc:mysql://database-1.c9gwyseo4s8h.us-east-2.rds.amazonaws.com:3306/
+#spring.datasource.username=admin
+#spring.datasource.password=Chikku3103
+#spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
