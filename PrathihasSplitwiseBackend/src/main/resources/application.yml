@@ -10,6 +10,9 @@
 #
 #server.port=8080
 
+server:
+  port: 8080
+
 spring:
   application:
     name: PrathihasSplitwise
@@ -27,8 +30,19 @@ spring:
           merge:
             entity_copy_observer: allow
 
-server:
-  port: 8080
+  cloud:
+    stream:
+      bindings:
+        sendCommunication-out-0:
+          destination: send-communication
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
+
 
 # Uncomment the following lines if needed for a different configuration
 # spring:
