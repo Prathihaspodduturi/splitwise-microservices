@@ -41,7 +41,12 @@ public class SignUpController {
             User findUser = theUserDAOImpl.findUserByName(newUser.getUsername());
 
             if(findUser != null){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists or username is already taken");
+            }
+
+            findUser = theUserDAOImpl.findUserByEmail(newUser.getEmail());
+            if(findUser != null){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use by other user");
             }
 
             String hashedPassword = passwordEncoder.encode(newUser.getPassword());
