@@ -1,8 +1,8 @@
 package com.PrathihasProjects.PrathihasSplitwise.Controller;
 
 import com.PrathihasProjects.PrathihasSplitwise.dao.UserDAOImpl;
-import com.PrathihasProjects.PrathihasSplitwise.dto.AccountCreatedDto;
 import com.PrathihasProjects.PrathihasSplitwise.entity.User;
+import com.PrathihasProjects.PrathihasSplitwise.services.EmailValidator;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -38,11 +38,18 @@ public class SignUpController {
     public ResponseEntity<?> signupController(@RequestBody User newUser)
     {
         try {
+
+            if (!EmailValidator.isValidEmail(newUser.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email format");
+            }
+
             User findUser = theUserDAOImpl.findUserByName(newUser.getUsername());
 
             if(findUser != null){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists or username is already taken");
             }
+
+
 
             findUser = theUserDAOImpl.findUserByEmail(newUser.getEmail());
             if(findUser != null){
