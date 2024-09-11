@@ -2,6 +2,7 @@ package com.PrathihasProjects.PrathihasSplitwise.dao;
 
 import com.PrathihasProjects.PrathihasSplitwise.entity.User;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,5 +30,16 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User findUserByName(String userName) {
         return entityManager.find(User.class, userName);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        try {
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Handle the case where no user is found with the provided email
+        }
     }
 }
