@@ -54,8 +54,7 @@ public class SignUpController {
 
             theUserDAOImpl.save(newUser);
 
-            User createdUser = theUserDAOImpl.findUserByName((newUser.getUsername()));
-            sendCommunication(createdUser);
+            sendCommunication(newUser.getEmail());
 
             return ResponseEntity.ok("Signup successfull");
 
@@ -66,11 +65,10 @@ public class SignUpController {
         }
     }
 
-    private void sendCommunication(User createdUser)
+    private void sendCommunication(String email)
     {
-        var accountCreatedDto = new AccountCreatedDto(createdUser.getUsername(), "prathihasamazon@gmail.com");
-        log.info("sending communication request for the details: {}", accountCreatedDto);
-        var result = streamBridge.send("sendCommunication-out-0", accountCreatedDto);
+        log.info("sending communication request for the details: {}", email);
+        var result = streamBridge.send("sendCommunication-out-0", email);
         log.info("Is the communication request successfully processed?: {}", result);
     }
 }
