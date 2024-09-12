@@ -42,15 +42,4 @@ public class UserDAOImpl implements UserDAO {
             return null; // Handle the case where no user is found with the provided email
         }
     }
-
-    @Override
-    public String findEmailOfUser(String username) {
-        try {
-            return entityManager.createQuery("SELECT u.email FROM User u WHERE u.username = :username", String.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
 }

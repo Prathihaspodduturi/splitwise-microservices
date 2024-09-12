@@ -6,15 +6,20 @@ spring:
     name: "email"
   cloud:
     function:
-      definition: email, emailOtp
+      definition: email;otp
     stream:
       bindings:
         email-in-0:
           destination: send-communication
-          group: ${spring.application.name}
-        emailOtp-in-0:
+          group: "email-consumer-group"
+          content-type: application/json
+        otp-in-0:
           destination: send-otp
-          group: ${spring.application.name}
+          group: "otp-consumer-group"
+          content-type: application/json
+#      kafka:
+#        binder:
+#          brokers: localhost:9092
 
   rabbitmq:
     host: localhost

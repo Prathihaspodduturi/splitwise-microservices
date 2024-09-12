@@ -4,12 +4,13 @@ public class OtpDTO {
 
     public String email;
 
-    public String Otp;
+    public String otp;
 
+    public OtpDTO () {}
     public OtpDTO(String email, String otp)
     {
         this.email = email;
-        this.Otp = otp;
+        this.otp = otp;
     }
 
     public String getEmail() {
@@ -21,10 +22,10 @@ public class OtpDTO {
     }
 
     public String getOtp() {
-        return Otp;
+        return otp;
     }
 
     public void setOtp(String otp) {
-        Otp = otp;
+        this.otp = otp;
     }
 }

@@ -35,8 +35,13 @@ spring:
       bindings:
         sendCommunication-out-0:
           destination: send-communication
+          content-type: application/json
         sendOtp-out-0:
           destination: send-otp
+          content-type: application/json
+#      kafka:
+#        binder:
+#          brokers: localhost:9092
 
   rabbitmq:
     host: localhost

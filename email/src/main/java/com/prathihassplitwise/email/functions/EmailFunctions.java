@@ -1,5 +1,6 @@
 package com.prathihassplitwise.email.functions;
 
+import com.prathihassplitwise.email.dto.OtpDTO;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -68,4 +69,46 @@ public class EmailFunctions {
             }
         };
     }
+
+    @Bean
+    public Consumer<OtpDTO> otp() {
+        return otpDTO -> {
+            log.info("Sending OTP to: " + otpDTO.getEmail());
+
+            // Create the SendGrid client using your API key
+            SendGrid sendGrid = new SendGrid(sendGridApiKey);
+
+            // Define the sender and receiver email addresses
+            Email from = new Email("no-reply@splitsy.prathihaspodduturi.tech");
+            Email to = new Email(otpDTO.getEmail());  // Extract email from OtpDTO
+
+            // Create the content of the OTP email
+            Content content = new Content("text/plain",
+                    "Your OTP is: " + otpDTO.getOtp() +
+                            "\nThis OTP is valid for 10 minutes. Please do not share this OTP with anyone.");
+
+            // Build the Mail object with the subject, from, to, and content
+            Mail mail = new Mail(from, "Your OTP Code", to, content);
+
+            // Create the request to SendGrid's API
+            Request request = new Request();
+            try {
+                request.setMethod(Method.POST);
+                request.setEndpoint("mail/send");
+                request.setBody(mail.build());
+
+                // Send the email using the SendGrid API
+                Response response = sendGrid.api(request);
+
+                // Log the response details (status code, body, headers)
+                log.info("Status code: " + response.getStatusCode());
+                log.info("Body: " + response.getBody());
+                log.info("Headers: " + response.getHeaders());
+
+            } catch (IOException e) {
+                log.error("Error sending OTP email: " + e.getMessage());
+            }
+        };
+    }
+
 }
