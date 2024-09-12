@@ -2,6 +2,7 @@ package com.PrathihasProjects.PrathihasSplitwise.Controller;
 
 import com.PrathihasProjects.PrathihasSplitwise.dao.UserDAOImpl;
 import com.PrathihasProjects.PrathihasSplitwise.dto.OtpDTO;
+import com.PrathihasProjects.PrathihasSplitwise.dto.UsernameOrEmailDTO;
 import com.PrathihasProjects.PrathihasSplitwise.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,26 +32,38 @@ public class OtpController {
         this.streamBridge = streamBridge;
     }
 
-    @PostMapping("/splitwise/reset-password/Otp")
-    public ResponseEntity<?> OtpGenerate(@RequestBody String usernameOrEmail)
+    @PostMapping("/splitwise/reset-password/otp")
+    public ResponseEntity<?> OtpGenerate(@RequestBody UsernameOrEmailDTO usernameOrEmailDTO)
     {
         try
         {
+            String usernameOrEmail = usernameOrEmailDTO.getUsernameOrEmail();
+            log.info("Received request for OTP generation for: {}", usernameOrEmail);
+
+            // Try to find the user by username
             User findUser = theUserDAOImpl.findUserByName(usernameOrEmail);
 
-            String email = usernameOrEmail;
-            if(findUser != null)
-                email = theUserDAOImpl.findEmailOfUser(usernameOrEmail);
-            else
-            {
+            // If not found by username, try to find by email
+            if (findUser == null) {
+                log.info("User not found by username, trying by email: {}", usernameOrEmail);
                 findUser = theUserDAOImpl.findUserByEmail(usernameOrEmail);
-                if(findUser == null)
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The Username or Email is not linked to any account");
             }
 
+            // If the user is still not found, return an error
+            if (findUser == null) {
+                log.error("No user found with username or email: {}", usernameOrEmail);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The Username or Email is not linked to any account");
+            }
+
+            // Extract email and generate OTP
+            String email = findUser.getEmail();
             String otp = generateOtp();
+
+            // Send the OTP
             sendOtp(email, otp);
 
+            log.info("OTP sent successfully to {}", email);
             return ResponseEntity.ok("Otp sent successfully to email");
         }
         catch(Exception e)
@@ -64,7 +77,7 @@ public class OtpController {
     {
         OtpDTO otpDTO = new OtpDTO(email, otp);
         log.info("sending communication request for the details: {}", email);
-        var result = streamBridge.send("sendOtp-out-0", email);
+        var result = streamBridge.send("sendOtp-out-0", otpDTO);
         log.info("Is the communication request successfully processed?: {}", result);
     }
 
