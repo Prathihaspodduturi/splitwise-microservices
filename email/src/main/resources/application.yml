@@ -6,15 +6,21 @@ spring:
     name: "email"
   cloud:
     function:
-      definition: email
+      definition: email, emailOtp
     stream:
       bindings:
         email-in-0:
           destination: send-communication
           group: ${spring.application.name}
+        emailOtp-in-0:
+          destination: send-otp
+          group: ${spring.application.name}
+
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
     connection-timeout: 10s
+
+
