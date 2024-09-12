@@ -10,6 +10,4 @@ public interface UserDAO {
 
     User findUserByEmail(String email);
 
-    String findEmailOfUser(String username);
-
 }
