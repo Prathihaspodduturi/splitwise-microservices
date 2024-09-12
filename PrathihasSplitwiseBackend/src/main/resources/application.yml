@@ -35,6 +35,8 @@ spring:
       bindings:
         sendCommunication-out-0:
           destination: send-communication
+        sendOtp-out-0:
+          destination: send-otp
 
   rabbitmq:
     host: localhost
