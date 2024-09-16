@@ -10,4 +10,6 @@ public interface UserDAO {
 
     User findUserByEmail(String email);
 
+    void updateUser(User user);
+
 }
