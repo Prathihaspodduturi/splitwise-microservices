@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     try {
                         authorize
-                                .requestMatchers("/splitwise/", "/splitwise/login", "/splitwise/signup", "/heartbeat", "/splitwise/reset-password/otp").permitAll()
+                                .requestMatchers("/splitwise/", "/splitwise/login", "/splitwise/signup", "/heartbeat", "/splitwise/reset-password/otp", "splitwise/reset-password/verify").permitAll()
                                 .anyRequest().authenticated();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
