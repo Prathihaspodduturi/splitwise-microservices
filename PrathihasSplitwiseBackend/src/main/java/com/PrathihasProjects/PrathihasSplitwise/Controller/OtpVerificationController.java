@@ -1,6 +1,9 @@
 package com.PrathihasProjects.PrathihasSplitwise.Controller;
 
+import com.PrathihasProjects.PrathihasSplitwise.dao.UserDAOImpl;
 import com.PrathihasProjects.PrathihasSplitwise.dto.OtpDTO;
+import com.PrathihasProjects.PrathihasSplitwise.entity.User;
+import com.PrathihasProjects.PrathihasSplitwise.jwt.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +25,27 @@ public class OtpVerificationController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    private final JwtUtil jwtUtil;
+
+    private final UserDAOImpl userDAO;
+
+    @Autowired
+    public OtpVerificationController(JwtUtil jwtUtil, UserDAOImpl userDAO)
+    {
+        this.jwtUtil = jwtUtil;
+        this.userDAO = userDAO;
+    }
+
     @PostMapping("/splitwise/reset-password/verify")
     public ResponseEntity<?> verifyOtp(@RequestBody OtpDTO otpDTO) {
         try {
             String email = otpDTO.getEmail();
             String inputOtp = otpDTO.getOtp();
+
+            User findUser = userDAO.findUserByEmail(email);
+
+            if(findUser == null)
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Try resetting the password from the first");
 
             // Key to retrieve OTP from Redis
             String redisKey = email;
@@ -56,7 +75,9 @@ public class OtpVerificationController {
             // Optionally, you can remove the OTP from Redis after successful verification
             redisTemplate.delete(redisKey);
 
-            return ResponseEntity.ok("OTP verified successfully.");
+            final String jwtToken = jwtUtil.generateToken(findUser.getUsername(), 0);
+
+            return ResponseEntity.ok(jwtToken);
         } catch (Exception e) {
             log.error("Error occurred during OTP verification for email: {}", otpDTO.getEmail(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during OTP verification.");
