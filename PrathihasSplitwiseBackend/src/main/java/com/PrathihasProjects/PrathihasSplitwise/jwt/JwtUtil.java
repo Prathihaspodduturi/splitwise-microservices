@@ -15,11 +15,16 @@ public class JwtUtil {
 
     SecretKey secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(String username)
+    public String generateToken(String username, int f)
     {
+        long timeLimit = 1000 * 60 * 60 * 10;
+
+        if(f ==1)
+            timeLimit = 1000 * 60 * 5;
+
         return Jwts.builder().setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + timeLimit)) // 10 hours
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
