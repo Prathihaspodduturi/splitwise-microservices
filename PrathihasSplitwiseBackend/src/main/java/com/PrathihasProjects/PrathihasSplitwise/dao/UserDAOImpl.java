@@ -3,7 +3,6 @@ package com.PrathihasProjects.PrathihasSplitwise.dao;
 import com.PrathihasProjects.PrathihasSplitwise.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,5 +40,11 @@ public class UserDAOImpl implements UserDAO {
         } catch (NoResultException e) {
             return null; // Handle the case where no user is found with the provided email
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user){
+        entityManager.merge(user);
     }
 }
