@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import java.util.concurrent.TimeUnit;
+
 import java.security.SecureRandom;
 
 @RestController
@@ -25,6 +29,9 @@ public class OtpController {
 
     private final StreamBridge streamBridge;
     private final UserDAOImpl theUserDAOImpl;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Autowired
     public OtpController(UserDAOImpl theUserDAOImpl, StreamBridge streamBridge) {
@@ -58,17 +65,44 @@ public class OtpController {
 
             // Extract email and generate OTP
             String email = findUser.getEmail();
-            String otp = generateOtp();
+            String redisKey = email; // Key is just the email
+            ValueOperations<String, String> ops = redisTemplate.opsForValue();
+            String otpAndCount = ops.get(redisKey);
 
+            String otp;
+            int requestCount;
+
+            if (otpAndCount == null) {
+                // No previous OTP or count found, initialize both
+                otp = null;
+                requestCount = 0;
+            } else {
+                // Split the value into OTP and request count
+                String[] parts = otpAndCount.split(":");
+                otp = parts[0]; // Previous OTP (not used further)
+                requestCount = Integer.parseInt(parts[1]);
+            }
+
+            // Check if the request count exceeds the limit
+            if (requestCount > 3) {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body("Too many OTP requests. Please try again later.");
+            }
+
+            otp = generateOtp();
+            requestCount++;
             // Send the OTP
             sendOtp(email, otp);
+
+            String newOtpAndCount = otp + ":" + requestCount;
+            ops.set(redisKey, newOtpAndCount, 1, TimeUnit.HOURS);
 
             log.info("OTP sent successfully to {}", email);
             return ResponseEntity.ok("Otp sent successfully to email");
         }
         catch(Exception e)
         {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, Please try again later!");
         }
     }
 
