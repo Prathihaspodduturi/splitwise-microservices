@@ -27,7 +27,7 @@ public class JwtUtilTest {
     @Test
     public void testGenerateToken() {
         String username = "testuser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, 1);
         assertNotNull(token);
 
         String usernameFromToken = jwtUtil.getUsernameFromToken(token);
@@ -37,7 +37,7 @@ public class JwtUtilTest {
     @Test
     public void testValidateToken_ValidToken() {
         String username = "testuser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, 1);
 
         Boolean isValid = jwtUtil.validateToken(token, username);
         assertTrue(isValid);
@@ -46,7 +46,7 @@ public class JwtUtilTest {
     @Test
     public void testValidateToken_InvalidToken() {
         String username = "testuser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, 1);
 
         Boolean isValid = jwtUtil.validateToken(token, "wronguser");
         assertFalse(isValid);
@@ -55,7 +55,7 @@ public class JwtUtilTest {
     @Test
     public void testGetUsernameFromToken() {
         String username = "testuser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, 1);
 
         String usernameFromToken = jwtUtil.getUsernameFromToken(token);
         assertEquals(username, usernameFromToken);
@@ -83,7 +83,7 @@ public class JwtUtilTest {
     @Test
     public void testGetClaimFromToken() {
         String username = "testuser";
-        String token = jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(username, 1);
 
         String usernameFromClaim = jwtUtil.getClaimFromToken(token, Claims::getSubject);
         assertEquals(username, usernameFromClaim);
