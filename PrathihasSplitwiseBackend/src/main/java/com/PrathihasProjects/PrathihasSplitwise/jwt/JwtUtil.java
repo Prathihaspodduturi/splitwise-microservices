@@ -36,7 +36,13 @@ public class JwtUtil {
 
     public String getUsernameFromToken(String token) {
 
-        return getClaimFromToken(token, Claims::getSubject);
+        try {
+            return getClaimFromToken(token, Claims::getSubject);
+        }
+        catch(Exception e)
+        {
+            return "token not found";
+        }
     }
 
     Boolean isTokenExpired(String token) {
