@@ -148,7 +148,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>prathihas/${project.artifactId}:v1</image>
+						<image>prathihas/${project.artifactId}:v3</image>
 					</to>
 				</configuration>
 			</plugin>
