@@ -86,10 +86,10 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.4.3</version>
+				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>prathihas/${project.artifactId}:v1</image>
+						<image>prathihas/${project.artifactId}:v3</image>
 					</to>
 				</configuration>
 			</plugin>
